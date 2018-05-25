@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         在iTunes中打开
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.2.1
 // @description  给iOS对应的iTunes应用增加 "在这里查看：iTunes" 按钮
 // @author       larify
 // @run-at       document-idle
 // @match        https://itunes.apple.com/*
 // @downloadURL  https://github.com/luoweihua7/TamperMonkey/raw/master/user/Open-In-iTunes.user.js
+// @icon         https://itunes.apple.com/favicon.ico
 // @grant        none
 
 // ==/UserScript==
