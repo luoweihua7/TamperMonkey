@@ -6,6 +6,30 @@
 // @run-at       document-idle
 // @include      *.zhihu.com/*
 // @downloadURL  https://github.com/luoweihua7/TamperMonkey/raw/master/user/Zhihu-Url-Fix.user.js
+// @icon         https://www.zhihu.com/favicon.ico
 // @grant        none
 
 // ==/UserScript==
+
+(function () {
+	let linkFix = () => {
+		let elems = [...document.querySelectorAll('a.external')];
+
+		elems.forEach(link => {
+			let tmp = link.href.split('target=');
+
+			if (tmp.length === 2) {
+				link.href = decodeURIComponent(tmp[1]);
+			}
+		});
+	};
+	let target = document.querySelector('#QuestionAnswers-answers');
+	let observer = new MutationObserver(function (mutations, itself) {
+		linkFix();
+	});
+	let config = { childList: true, subtree: true };
+
+	observer.observe(target, config);
+
+	setTimeout(linkFix, 500);
+})();
