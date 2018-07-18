@@ -5,11 +5,10 @@
 // @description  自动填充百度云密码
 // @author       larify
 // @run-at       document-idle
-// @match        https://pan.baidu.com/*
+// @match        *//pan.baidu.com/share/*
 // @downloadURL  https://github.com/luoweihua7/TamperMonkey/raw/master/user/BaiduYun-Password.user.js
 // @icon         https://www.baidu.com/favicon.ico
 // @grant        GM_xmlhttpRequest
-
 // ==/UserScript==
 
 setTimeout(() => {
