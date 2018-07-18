@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         百度云密码自动填充
 // @namespace    http://tampermonkey.net/
-// @version      0.1.2
+// @version      0.1.3
 // @description  自动填充百度云密码
 // @author       larify
 // @run-at       document-idle
@@ -47,7 +47,7 @@ setTimeout(() => {
                         setTimeout(() => {
                             let button = wrapper.querySelector('a');
                             button.click();
-                        }, 300);
+                        }, 100);
                     } else {
                         let div = document.createElement('div');
 
