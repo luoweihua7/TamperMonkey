@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         百度云密码自动填充
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.1.5
 // @description  自动填充百度云密码
 // @author       larify
 // @run-at       document-idle
-// @match        *//pan.baidu.com/share/*
+// @match        https://pan.baidu.com/share/*
 // @downloadURL  https://github.com/luoweihua7/TamperMonkey/raw/master/user/BaiduYun-Password.user.js
 // @icon         https://www.baidu.com/favicon.ico
 // @grant        GM_xmlhttpRequest
@@ -59,4 +59,4 @@ setTimeout(() => {
             }
         })
     }
-}, 1000);
+}, 300);
