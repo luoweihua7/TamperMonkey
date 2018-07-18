@@ -6,7 +6,7 @@
 // @author       larify
 // @run-at       document-idle
 // @match        https://pan.baidu.com/*
-// @downloadURL  https://github.com/luoweihua7/TamperMonkey/raw/master/user/Open-In-iTunes.user.js
+// @downloadURL  https://github.com/luoweihua7/TamperMonkey/raw/master/user/BaiduYun-Password.user.js
 // @icon         https://www.baidu.com/favicon.ico
 // @grant        GM_xmlhttpRequest
 
