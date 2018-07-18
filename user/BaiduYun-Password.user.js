@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         百度云密码自动填充
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
+// @version      0.1.1
 // @description  自动填充百度云密码
 // @author       larify
 // @run-at       document-idle
