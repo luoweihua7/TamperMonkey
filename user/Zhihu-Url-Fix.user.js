@@ -23,7 +23,7 @@
 			}
 		});
 	};
-	let target = document.querySelector('#QuestionAnswers-answers');
+	let target = document.querySelector('body');
 	let observer = new MutationObserver(function (mutations, itself) {
 		linkFix();
 	});
