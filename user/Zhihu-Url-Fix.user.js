@@ -13,7 +13,7 @@
 
 (function () {
 	let linkFix = () => {
-		let elems = [...document.querySelectorAll('a.external')];
+		let elems = [...document.querySelectorAll('a.external'), ...document.querySelectorAll('a.LinkCard')];
 
 		elems.forEach(link => {
 			let tmp = link.href.split('target=');
