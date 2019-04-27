@@ -12,3 +12,6 @@
 ## Zhihu-Url-Fix.user.js
 知乎帖子内链接点击直接打开。
 之前用的其他开发者写的插件是不改url，绑定click事件打开，这里直接修改href内容，可以方便的打开和复制(个人用到比较多)
+
+## Debug-Vue-In-Production.user.js
+在生产环境开启Vue.js devtools调试
