@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         知乎帖子外链直接打开
-// @version      0.1
+// @version      0.2.0
 // @description  知乎帖子外链直接打开
 // @author       larify
 // @run-at       document-idle
@@ -23,13 +23,13 @@
 			}
 		});
 	};
-	let target = document.querySelector('body');
-	let observer = new MutationObserver(function (mutations, itself) {
+
+	setTimeout(() => {
+		let target = document.querySelector('body');
+		let observer = new MutationObserver(() => linkFix());
+		let config = { childList: true, subtree: true };
+
+		observer.observe(target, config);
 		linkFix();
-	});
-	let config = { childList: true, subtree: true };
-
-	observer.observe(target, config);
-
-	setTimeout(linkFix, 500);
+	}, 500);
 })();
