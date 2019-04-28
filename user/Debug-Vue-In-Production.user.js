@@ -12,8 +12,8 @@
 // @icon         https://vuejs.org//images/logo.png
 // ==/UserScript==
 
-(function() {
-  function findVue($el) {
+(function () {
+  function findVueInstance($el) {
     // console.log(`Finding Vue: ${$el.tagName}`)
     let __vue__ = $el.__vue__;
 
@@ -66,7 +66,7 @@
       typeof window.__VUE_DEVTOOLS_GLOBAL_HOOK__ === "object" &&
       typeof __VUE_DEVTOOLS_GLOBAL_HOOK__.emit === "function"
     ) {
-      let $vm = findVue(document.querySelector("body"));
+      let $vm = findVueInstance(document.querySelector("body"));
       let _Vue = getVue($vm);
 
       if (_Vue) {
