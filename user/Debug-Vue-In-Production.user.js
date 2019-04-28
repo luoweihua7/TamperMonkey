@@ -25,7 +25,7 @@
         let children = [...$el.children];
 
         children.some($child => {
-          __vue__ = findVue($child);
+          __vue__ = findVueInstance($child);
           return __vue__;
         });
 
