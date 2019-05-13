@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Vue调试
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  在生产环境开启Vue.js devtools调试
 // @author       larify
 // @run-at       document-end
@@ -59,23 +59,33 @@
     return;
   }
 
-  let window = unsafeWindow;
+  let win;
+  if (typeof window !== 'undefined' && window.top === window) {
+    win = window
+  } else if (typeof unsafeWindow !== 'undefined') {
+    win = unsafeWindow
+  }
+
+  if (!win) return;
 
   setTimeout(() => {
     if (
-      typeof window.__VUE_DEVTOOLS_GLOBAL_HOOK__ === "object" &&
+      typeof win.__VUE_DEVTOOLS_GLOBAL_HOOK__ === "object" &&
       typeof __VUE_DEVTOOLS_GLOBAL_HOOK__.emit === "function"
     ) {
       let $vm = findVueInstance(document.querySelector("body"));
       let _Vue = getVue($vm);
 
-      if (_Vue) {
+      if (_Vue && _Vue.config.devtools === false) {
         _Vue.config.devtools = true;
         __VUE_DEVTOOLS_GLOBAL_HOOK__.emit("init", _Vue);
 
         console.log(
-          `已启用Vue生产环境调试，如果无法看到Vue调试Tab，请关闭DevTools再打开`
-        );
+          `%c vue-devtools %c 已启用Vue生产环境调试，如果无法看到Vue调试Tab，请关闭 Developer Tools 再打开 %c`,
+          'background:#35495e ; padding: 2px; border-radius: 3px 0 0 3px;  color: #fff',
+          'background:#41b883 ; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff',
+          'background:transparent'
+        )
       }
     }
   }, 500);
