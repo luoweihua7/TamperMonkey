@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Vue调试
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.1.1
 // @description  在生产环境开启Vue.js devtools调试
 // @author       larify
 // @run-at       document-end
