@@ -76,7 +76,7 @@
         __VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', _Vue)
 
         // Init Vuex Store
-        var devtoolHook = typeof window !== 'undefined' && window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+        let devtoolHook = typeof window !== 'undefined' && window.__VUE_DEVTOOLS_GLOBAL_HOOK__
         function devtoolPlugin(store) {
           if (!devtoolHook || !store) {
             return
