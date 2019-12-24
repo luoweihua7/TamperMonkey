@@ -33,7 +33,18 @@
           return decodeURIComponent(tmp[1])
         }
       }
-    }
+    },
+    {
+        domain: 'jianshu.com',
+        elements: ['a'],
+        replacer(url) {
+          let tmp = url.split('to=')
+  
+          if (tmp.length === 2) {
+            return decodeURIComponent(tmp[1])
+          }
+        }
+      }
   ]
 
   let win
