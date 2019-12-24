@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         外链直接打开
-// @version      1.1.0
+// @version      1.2.0
 // @description  外链直接打开
 // @author       larify
 // @run-at       document-end
@@ -39,7 +39,7 @@
         elements: ['a'],
         replacer(url) {
           let tmp = url.split('to=')
-  
+
           if (tmp.length === 2) {
             return decodeURIComponent(tmp[1])
           }
