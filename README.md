@@ -16,3 +16,8 @@
 
 ## Debug-Vue-In-Production.user.js
 在生产环境开启Vue.js devtools调试
+
+
+## WeiYun-Download.user.js
+微云下载。
+核心代码使用了 loo2k 的 [WeiyunHelper](https://github.com/loo2k/WeiyunHelper/)，增加了下载选项配置
