@@ -11,9 +11,18 @@
 // ==/UserScript==
 
 ;(function () {
+  const config = {
+    aria2c: {
+      host: 'ariang.com',
+      port: '6800',
+      secret: 'aria',
+    },
+  }
+  // 下载任务
   function addDownloadTask(url, cookies, fileName = '') {
     //
   }
+
   // 实现原理：通过axios的响应拦截器，监测文件下载后处理
   const chunkId = Math.random().toString(36).substring(7)
   webpackJsonp(
@@ -31,6 +40,7 @@
 
         const axios = modules[0]
 
+        // 拦截下载请求，并获取下载数据
         axios.interceptors.response.use(
           (response) => {
             let { data, config } = response
