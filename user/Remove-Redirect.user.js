@@ -10,82 +10,85 @@
 
 // ==/UserScript==
 
-;(function() {
+(function () {
   let configs = [
     {
-      domain: 'zhihu.com',
+      domain: /zhihu\.com/,
       elements: ['a.external', 'a.LinkCard'],
       replacer(url) {
-        let tmp = url.split('target=')
+        let tmp = url.split('target=');
 
         if (tmp.length === 2) {
-          return decodeURIComponent(tmp[1])
+          return decodeURIComponent(tmp[1]);
         }
-      }
+      },
     },
     {
-      domain: 'juejin.im',
+      domain: /juejin\.im|juejin\.cn/,
       elements: ['a'],
       replacer(url) {
-        let tmp = url.split('target=')
+        let tmp = url.split('target=');
 
         if (tmp.length === 2) {
-          return decodeURIComponent(tmp[1])
+          return decodeURIComponent(tmp[1]);
         }
-      }
+      },
     },
     {
-        domain: 'jianshu.com',
-        elements: ['a'],
-        replacer(url) {
-          let tmp = url.split('to=')
+      domain: /jianshu\.com/,
+      elements: ['a'],
+      replacer(url) {
+        let tmp = url.split('to=');
 
-          if (tmp.length === 2) {
-            return decodeURIComponent(tmp[1])
-          }
+        if (tmp.length === 2) {
+          return decodeURIComponent(tmp[1]);
         }
-      }
-  ]
+      },
+    },
+  ];
 
-  let win
+  let win;
   if (typeof window !== 'undefined' && window.top === window) {
-    win = window
+    win = window;
   } else if (typeof unsafeWindow !== 'undefined') {
-    win = unsafeWindow
+    win = unsafeWindow;
   }
 
-  let config = []
-  let host = win.location.hostname
-  configs.forEach(conf => {
-    if (host.includes(conf.domain)) {
-      config.push(conf)
-    }
-  })
+  // 容错
+  if (!win) return;
 
-  if (config.length === 0) return
+  let config = [];
+  let host = win.location.hostname;
+  configs.forEach((conf) => {
+    if (host.match(conf.domain)) {
+      config.push(conf);
+    }
+  });
+
+  if (config.length === 0) return;
 
   const removeLinkRedirect = () => {
-    config.forEach(conf => {
-      let elements = []
-      conf.elements.forEach(selector => {
-        elements = elements.concat([...document.querySelectorAll(selector)])
-      })
+    config.forEach((conf) => {
+      let elements = [];
+      conf.elements.forEach((selector) => {
+        elements = elements.concat([...document.querySelectorAll(selector)]);
+      });
 
       // 替换为原始URL
-      elements.forEach(link => {
-        let url = conf.replacer(link.href)
+      elements.forEach((link) => {
+        let url = conf.replacer(link.href);
         if (url) {
-          link.href = url
+          link.href = url;
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
   setTimeout(() => {
-    let bodyEl = document.querySelector('body')
-    let observer = new MutationObserver(removeLinkRedirect)
+    let bodyEl = document.querySelector('body');
+    let observer = new MutationObserver(removeLinkRedirect);
 
-    observer.observe(bodyEl, { childList: true, subtree: true })
-    removeLinkRedirect()
-  }, 500)
-})()
+    observer.observe(bodyEl, { childList: true, subtree: true });
+    removeLinkRedirect();
+  }, 500);
+})();
