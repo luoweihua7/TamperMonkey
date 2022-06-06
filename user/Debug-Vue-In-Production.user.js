@@ -12,97 +12,96 @@
 // @icon         https://vuejs.org//images/logo.png
 // ==/UserScript==
 
-;(function() {
+(function () {
   function findVueInstance($el) {
-    // console.log(`Finding Vue: ${$el.tagName}`)
-    let __vue__ = $el.__vue__
+    // console.log(`Finding Vue: ${$el.tagName} - ${$el.className}`);
+    let $vm = $el.__vue__;
+    let result = { $vm, Vue: getVue($vm) };
 
-    if (__vue__) {
-      return __vue__
+    if (result.$vm && result.Vue) {
+      return result;
     } else {
-      let tagName = $el.tagName
-      if (['SCRIPT', 'STYLE'].indexOf(tagName) === -1) {
-        let children = [...$el.children]
+      let tagName = $el.tagName.toUpperCase();
+      if (['SCRIPT', 'STYLE', 'SYMBOL'].indexOf(tagName) === -1) {
+        let children = [...$el.children];
 
-        children.some($child => {
-          __vue__ = findVueInstance($child)
-          return __vue__
-        })
+        children.some(($child) => {
+          result = findVueInstance($child);
+          return result && result.$vm && result.Vue;
+        });
 
-        return __vue__
+        return result;
       } else {
-        return
+        return;
       }
     }
   }
 
   function getVue(obj) {
     if (!!obj && obj._isVue) {
-      let $constructor = obj.constructor
+      let $constructor = obj.constructor;
 
       if ($constructor.config && typeof $constructor.config.devtools === 'boolean') {
-        return obj.constructor
+        return $constructor;
       }
 
       if ($constructor.super && $constructor.super.config && typeof $constructor.super.config.devtools === 'boolean') {
-        return $constructor.super
+        return $constructor.super;
       }
     }
 
-    return
+    return;
   }
 
-  let win
+  let win;
   if (typeof window !== 'undefined' && window.top === window) {
-    win = window
+    win = window;
   } else if (typeof unsafeWindow !== 'undefined') {
-    win = unsafeWindow
+    win = unsafeWindow;
   }
 
-  if (!win) return
+  if (!win) return;
 
+  // Wait for Vue.js devtools ready
   setTimeout(() => {
-    if (
-      typeof win.__VUE_DEVTOOLS_GLOBAL_HOOK__ === 'object' &&
-      typeof __VUE_DEVTOOLS_GLOBAL_HOOK__.emit === 'function'
-    ) {
-      let $vm = findVueInstance(document.querySelector('body'))
-      let _Vue = getVue($vm)
+    const devtoolHook = win.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 
-      if (_Vue && _Vue.config.devtools === false) {
-        _Vue.config.devtools = true
+    if (typeof devtoolHook === 'object' && typeof devtoolHook.emit === 'function') {
+      const { $vm, Vue } = findVueInstance(document.querySelector('body'));
+
+      if (Vue && Vue.config.devtools === false) {
+        Vue.config.devtools = true;
 
         // Init Vue Components
-        __VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', _Vue)
+        devtoolHook.emit('init', Vue);
 
         // Init Vuex Store
-        let devtoolHook = typeof window !== 'undefined' && window.__VUE_DEVTOOLS_GLOBAL_HOOK__
         function devtoolPlugin(store) {
           if (!devtoolHook || !store) {
-            return
+            return;
           }
 
-          store._devtoolHook = devtoolHook
+          store._devtoolHook = devtoolHook;
 
-          devtoolHook.emit('vuex:init', store)
+          devtoolHook.emit('vuex:init', store);
 
-          devtoolHook.on('vuex:travel-to-state', function(targetState) {
-            store.replaceState(targetState)
-          })
+          devtoolHook.on('vuex:travel-to-state', function (targetState) {
+            store.replaceState(targetState);
+          });
 
-          store.subscribe(function(mutation, state) {
-            devtoolHook.emit('vuex:mutation', mutation, state)
-          })
+          store.subscribe(function (mutation, state) {
+            devtoolHook.emit('vuex:mutation', mutation, state);
+          });
         }
-        devtoolPlugin($vm.$store)
+        devtoolPlugin($vm.$store);
 
         console.log(
-          `%c vue-devtools %c 已启用Vue生产环境调试，如果无法看到Vue调试Tab，请关闭 Developer Tools 再打开 %c`,
+          `%c vue-devtools %c 已启用Vue生产环境调试，如果无法看到Vue调试Tab，请关闭 Developer Tools 后再重新打开 %c`,
           'background:#35495e ; padding: 2px; border-radius: 3px 0 0 3px;  color: #fff',
           'background:#41b883 ; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff',
           'background:transparent'
-        )
+        );
       }
     }
-  }, 500)
-})()
+  }, 500);
+})();
