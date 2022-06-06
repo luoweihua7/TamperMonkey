@@ -53,6 +53,15 @@
     return;
   }
 
+  function printLog(message, title = 'Vue Devtools') {
+    console.log(
+      `%c ${title} %c ${message} %c`,
+      'background:#35495e ; padding: 2px; border-radius: 3px 0 0 3px;  color: #fff',
+      'background:#41b883 ; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff',
+      'background:transparent'
+    );
+  }
+
   let win;
   if (typeof window !== 'undefined' && window.top === window) {
     win = window;
@@ -95,13 +104,12 @@
         }
         devtoolPlugin($vm.$store);
 
-        console.log(
-          `%c vue-devtools %c 已启用Vue生产环境调试，如果无法看到Vue调试Tab，请关闭 Developer Tools 后再重新打开 %c`,
-          'background:#35495e ; padding: 2px; border-radius: 3px 0 0 3px;  color: #fff',
-          'background:#41b883 ; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff',
-          'background:transparent'
-        );
+        printLog('已启用Vue调试，如未看到Vue调试Tab，请关闭 Developer Tools 后再重新打开');
+      } else {
+        printLog('未检测到Vue实例');
       }
+    } else {
+      printLog('未检测到 Vue.js devtools 插件');
     }
   }, 500);
 })();
