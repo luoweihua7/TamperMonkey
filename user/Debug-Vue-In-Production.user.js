@@ -15,10 +15,10 @@
 (function () {
   function findVueInstance($el) {
     // console.log(`Finding Vue: ${$el.tagName} - ${$el.className}`);
-    let $vm = $el.__vue__;
-    let result = { $vm, Vue: getVue($vm) };
+    let app = $el.__vue__ || $el.__vue_app__;
+    let result = { app, Vue: getVue(app), isVue2: $el.__vue__, isVue3: $el.__vue_app__ };
 
-    if (result.$vm && result.Vue) {
+    if (result.app && result.Vue) {
       return result;
     } else {
       let tagName = $el.tagName.toUpperCase();
@@ -27,7 +27,7 @@
 
         children.some(($child) => {
           result = findVueInstance($child);
-          return result && result.$vm && result.Vue;
+          return result && result.app && result.Vue;
         });
 
         return result;
@@ -37,16 +37,22 @@
     }
   }
 
-  function getVue(obj) {
-    if (!!obj && obj._isVue) {
-      let $constructor = obj.constructor;
+  function getVue(app) {
+    if (!!app) {
+      if (app._isVue) {
+        // Vue2
+        let ctor = app.constructor;
 
-      if ($constructor.config && typeof $constructor.config.devtools === 'boolean') {
-        return $constructor;
-      }
+        if (ctor.config && typeof ctor.config.devtools === 'boolean') {
+          return ctor;
+        }
 
-      if ($constructor.super && $constructor.super.config && typeof $constructor.super.config.devtools === 'boolean') {
-        return $constructor.super;
+        if (ctor.super && ctor.super.config && typeof ctor.super.config.devtools === 'boolean') {
+          return ctor.super;
+        }
+      } else if (app._container && app._container._vnode && app._container._vnode.component) {
+        // Vue3
+        return app;
       }
     }
 
@@ -73,38 +79,42 @@
 
   // Wait for Vue.js devtools ready
   setTimeout(() => {
-    const devtoolHook = win.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+    const devtoolsHook = win.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 
-    if (typeof devtoolHook === 'object' && typeof devtoolHook.emit === 'function') {
-      const { $vm, Vue } = findVueInstance(document.querySelector('body'));
+    if (typeof devtoolsHook === 'object' && typeof devtoolsHook.emit === 'function') {
+      const { app, Vue, isVue2, isVue3 } = findVueInstance(document.querySelector('body'));
 
-      if (Vue && Vue.config.devtools === false) {
+      if (isVue2 && Vue && Vue.config.devtools === false) {
         Vue.config.devtools = true;
 
         // Init Vue Components
-        devtoolHook.emit('init', Vue);
+        devtoolsHook.emit('init', Vue);
 
         // Init Vuex Store
         function devtoolPlugin(store) {
-          if (!devtoolHook || !store) {
+          if (!devtoolsHook || !store) {
             return;
           }
 
-          store._devtoolHook = devtoolHook;
+          store._devtoolsHook = devtoolsHook;
 
-          devtoolHook.emit('vuex:init', store);
+          devtoolsHook.emit('vuex:init', store);
 
-          devtoolHook.on('vuex:travel-to-state', function (targetState) {
+          devtoolsHook.on('vuex:travel-to-state', function (targetState) {
             store.replaceState(targetState);
           });
 
           store.subscribe(function (mutation, state) {
-            devtoolHook.emit('vuex:mutation', mutation, state);
+            devtoolsHook.emit('vuex:mutation', mutation, state);
           });
         }
-        devtoolPlugin($vm.$store);
+        devtoolPlugin(app.$store);
 
-        printLog('已启用Vue调试，如未看到Vue调试Tab，请关闭 Developer Tools 后再重新打开');
+        printLog('已启用Vue2调试，如未看到Vue调试Tab，请关闭 Developer Tools 后再重新打开');
+      } else if (isVue3 && app) {
+        devtoolsHook.enabled = true;
+        devtoolsHook.emit('app:init', app, app.version, {});
+        printLog('已启用Vue3调试，如未看到Vue调试Tab，请关闭 Developer Tools 后再重新打开');
       } else {
         printLog('未检测到Vue实例');
       }
